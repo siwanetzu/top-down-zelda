@@ -6,6 +6,7 @@ class_name EnemyBase extends CharacterBody2D
 @export var health = 3
 @export var damage = 1
 @export var attack_cooldown = 1.0
+var is_dying = false
 
 # --- REFERENCES ---
 var player = null
@@ -42,17 +43,24 @@ func _physics_process(delta):
 
 # --- SIGNALS ---
 func _on_detection_area_body_entered(body):
+	if is_dying:
+		return
 	if body.is_in_group("player"):
 		state_machine.transition_to("ChaseState")
 
 func _on_detection_area_body_exited(body):
+	if is_dying:
+		return
 	if body.is_in_group("player"):
 		state_machine.transition_to("IdleState")
 
 # --- ACTIONS ---
 func take_damage(amount):
+	if is_dying:
+		return
 	health -= amount
 	if health <= 0:
+		is_dying = true
 		die()
 
 func die():
@@ -62,14 +70,23 @@ func die():
 
 	# Play the death animation if it exists
 	if animated_sprite.sprite_frames.has_animation("death"):
+		# Ensure the death animation doesn't loop, so 'animation_finished' is emitted.
+		animated_sprite.sprite_frames.set_animation_loop("death", false)
 		animated_sprite.play("death")
-		# Wait for the animation to finish, then remove the enemy
-		await animated_sprite.animation_finished
-	
+		animated_sprite.animation_finished.connect(_on_death_animation_finished)
+	else:
+		# If there's no death animation, spawn loot and queue for deletion immediately.
+		_spawn_loot()
+		queue_free()
+
+func _on_death_animation_finished():
+	_spawn_loot()
+	# Now it's safe to remove the enemy
+	queue_free()
+
+func _spawn_loot():
 	# Spawn loot
 	var loot_scene = preload("res://loot.tscn")
 	var loot_instance = loot_scene.instantiate()
-	get_tree().current_scene.add_child(loot_instance)
+	get_parent().add_child(loot_instance)
 	loot_instance.global_position = global_position
-	
-	queue_free()
