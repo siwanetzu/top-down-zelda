@@ -11,14 +11,14 @@ This phase is about creating a playable, repeatable slice of the game. The goal 
     * [x] ✅ Basic Enemy Scene (CharacterBody2D)
     * [x] ✅ Basic AI (Idle state and Chasing the player when in Area2D range)
     * [x] ✅ Enemy Health & Taking Damage (The take_damage function exists)
-    * [x] ✅ Enemy Attack Logic (The enemy stops in range but doesn't have an attack yet)
+    * [x] ✅ Enemy Attack Logic (The enemy stops in range and attacks the player)
     * [x] ✅ Death Sequence (What happens when enemy health reaches zero)
     * [x] ✅ Advanced AI for enemy (idle, movement, attack states)
 * Core Interaction & UI
     * [x] ✅ Player-to-Enemy Damage System (The hitbox successfully calls the enemy's take_damage function)
-    * [x] ✅ Enemy-to-Player Damage System (The enemy's attack needs to call a take_damage function on the player)
+    * [x] ✅ Enemy-to-Player Damage System (The enemy's attack successfully calls the player's take_damage function)
     * [x] ✅ Basic UI (Heads-Up Display) (Displaying player health, etc.)
-    * [ ] Loot Spawning & Interaction (Dropping items on death and picking them up)
+    * [x] ✅ Loot Spawning & Interaction (Dropping items on death and picking them up)
 
 ## Phase 2: Expanding the World & Systems (Making it a "Game")
 This phase will begin once the core combat loop from Phase 1 is fully functional.

@@ -66,4 +66,10 @@ func die():
 		# Wait for the animation to finish, then remove the enemy
 		await animated_sprite.animation_finished
 	
+	# Spawn loot
+	var loot_scene = preload("res://loot.tscn")
+	var loot_instance = loot_scene.instantiate()
+	get_tree().current_scene.add_child(loot_instance)
+	loot_instance.global_position = global_position
+	
 	queue_free()

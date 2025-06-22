@@ -107,3 +107,9 @@ func take_damage(amount):
 	health_changed.emit(health)
 	if health <= 0:
 		get_tree().reload_current_scene()
+
+func heal(amount):
+	health += amount
+	if health > 10:
+		health = 10
+	health_changed.emit(health)

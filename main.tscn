@@ -1,10 +1,9 @@
-[gd_scene load_steps=9 format=4 uid="uid://dsytutpwb4q3y"]
+[gd_scene load_steps=8 format=4 uid="uid://dsytutpwb4q3y"]
 
 [ext_resource type="PackedScene" uid="uid://b3dqnd7lnbn67" path="res://player.tscn" id="1_ig7tw"]
 [ext_resource type="Texture2D" uid="uid://cxfshcw228sqo" path="res://Assets/Action RPG Resources/World/Bush.png" id="2_0xm2m"]
 [ext_resource type="Texture2D" uid="uid://pqhmps3mo0a" path="res://Assets/Action RPG Resources/World/GrassBackground.png" id="3_h2yge"]
 [ext_resource type="PackedScene" uid="uid://d1yfgy357qgrh" path="res://bat.tscn" id="4_1bvp3"]
-[ext_resource type="Script" uid="uid://b73m5qkqli2hl" path="res://Scripts/bat.gd" id="5_lquwl"]
 [ext_resource type="PackedScene" uid="uid://gswj47cyax2h" path="res://hud.tscn" id="6_7mycd"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1bvp3"]
@@ -47,6 +46,5 @@ texture = ExtResource("2_0xm2m")
 
 [node name="Bat" parent="Enemies" instance=ExtResource("4_1bvp3")]
 position = Vector2(110, -62)
-script = ExtResource("5_lquwl")
 
-[node name="CanvasLayer" parent="." instance=ExtResource("6_7mycd")]
+[node name="HUD" parent="." instance=ExtResource("6_7mycd")]
