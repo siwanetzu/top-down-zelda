@@ -3,10 +3,10 @@
 [ext_resource type="Texture2D" uid="uid://bb7fdvq1uw2t2" path="res://Assets/Action RPG Resources/Enemies/Bat.png" id="1_7k104"]
 [ext_resource type="Script" uid="uid://b73m5qkqli2hl" path="res://Scripts/bat.gd" id="1_ulak1"]
 [ext_resource type="Texture2D" uid="uid://ym8fdx32tspr" path="res://Assets/Action RPG Resources/Effects/EnemyDeathEffect.png" id="2_vobq3"]
-[ext_resource type="Script" uid="uid://cugpt34vin1jw" path="res://Scripts/StateMachine.gd" id="4_1tubu"]
-[ext_resource type="Script" uid="uid://bvj3x5oa5slwr" path="res://Scripts/states/IdleState.gd" id="5_ulak1"]
-[ext_resource type="Script" uid="uid://ctohp8cyj1nk4" path="res://Scripts/states/ChaseState.gd" id="6_0pjmi"]
-[ext_resource type="Script" uid="uid://ila5slgcqnav" path="res://Scripts/states/AttackState.gd" id="7_5s65s"]
+[ext_resource type="Script" uid="uid://btm35fi2nqnyb" path="res://addons/state_machine_ai/state_machine.gd" id="4_ulak1"]
+[ext_resource type="Script" uid="uid://d3q34ekswkiyo" path="res://addons/state_machine_ai/states/idle_state.gd" id="5_0pjmi"]
+[ext_resource type="Script" uid="uid://dfawed8e0nlob" path="res://addons/state_machine_ai/states/chase_state.gd" id="6_5s65s"]
+[ext_resource type="Script" uid="uid://bjqiux7y0e8s2" path="res://addons/state_machine_ai/states/attack_state.gd" id="7_1e43q"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1tubu"]
 atlas = ExtResource("2_vobq3")
@@ -130,7 +130,7 @@ animations = [{
 size = Vector2(9, 10)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4gyqm"]
-radius = 56.0357
+radius = 105.0
 
 [node name="Bat" type="CharacterBody2D"]
 collision_layer = 4
@@ -153,20 +153,19 @@ collision_mask = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
 shape = SubResource("CircleShape2D_4gyqm")
 
-[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
-script = ExtResource("4_1tubu")
-initial_state = NodePath("IdleState")
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("4_ulak1")
 
 [node name="IdleState" type="Node" parent="StateMachine"]
-script = ExtResource("5_ulak1")
+script = ExtResource("5_0pjmi")
 metadata/_custom_type_script = "uid://bvj3x5oa5slwr"
 
 [node name="ChaseState" type="Node" parent="StateMachine"]
-script = ExtResource("6_0pjmi")
+script = ExtResource("6_5s65s")
 metadata/_custom_type_script = "uid://ctohp8cyj1nk4"
 
 [node name="AttackState" type="Node" parent="StateMachine"]
-script = ExtResource("7_5s65s")
+script = ExtResource("7_1e43q")
 metadata/_custom_type_script = "uid://ila5slgcqnav"
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]

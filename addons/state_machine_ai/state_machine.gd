@@ -6,7 +6,7 @@ var current_state: State
 # A dictionary of all the states this machine can be in.
 # The keys are the state names (e.g., "idle", "chase")
 # The values are the state nodes themselves.
-var states: Dictionary
+var states: Dictionary = {}
 
 # The initial state the machine should start in.
 @export var initial_state: State

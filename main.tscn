@@ -48,7 +48,5 @@ texture = ExtResource("2_0xm2m")
 [node name="Bat" parent="Enemies" instance=ExtResource("4_1bvp3")]
 position = Vector2(110, -62)
 script = ExtResource("5_lquwl")
-damage = 1
-attack_cooldown = 1.0
 
 [node name="CanvasLayer" parent="." instance=ExtResource("6_7mycd")]
