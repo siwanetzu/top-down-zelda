@@ -2,10 +2,13 @@ class_name Player extends CharacterBody2D
 
 const Hitbox = preload("res://hitbox.tscn")
 
+signal health_changed(new_health)
+
 @export var speed : float = 100.0
 @export var hitbox_offset = 25
 var face_direction = "Front"
 var animation_to_play = "Idle"
+@export var health = 10
 
 #trying out state variable
 var is_attacking = false
@@ -96,3 +99,9 @@ func _attack():
 	# We add the hitbox to the main scene tree so that it doesn't move with the player
 	get_tree().current_scene.add_child(hitbox_instance)
 	hitbox_instance.global_position = global_position + hitbox_position
+
+func take_damage(amount):
+	health -= amount
+	health_changed.emit(health)
+	if health <= 0:
+		get_tree().reload_current_scene()

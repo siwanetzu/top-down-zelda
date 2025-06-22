@@ -4,7 +4,10 @@ class_name Bat extends CharacterBody2D
 @export var speed = 75.0
 @export var attack_range = 30
 @export var health = 3
- 
+@export var damage = 1
+@export var attack_cooldown = 1.0
+
+var time_since_last_attack = 0.0
 # This will act as the switch to turn chasing on and off
 var is_chasing = false
 # This will hold a reference to the player node
@@ -27,6 +30,7 @@ func _ready():
 
 # _physics_process is called every physics frame. Ideal for movement.
 func _physics_process(delta):
+	time_since_last_attack += delta
 	# We only run our chase/attack logic if is_chasing is true.
 	if is_chasing and player:
 		var distance_to_player = global_position.distance_to(player.global_position)
@@ -34,7 +38,8 @@ func _physics_process(delta):
 		if distance_to_player <= attack_range:
 			# Player is in attack range, stop and attack
 			velocity = Vector2.ZERO
-			$AnimatedSprite2D.play("attack") # Assumes you have an "attack" animation
+			if time_since_last_attack >= attack_cooldown:
+				attack()
 		else:
 			# Player is in chase range, but not attack range. Move towards them.
 			var direction = global_position.direction_to(player.global_position)
@@ -46,6 +51,12 @@ func _physics_process(delta):
 		$AnimatedSprite2D.play("idle")
 		
 	move_and_slide()
+
+func attack():
+	time_since_last_attack = 0.0
+	$AnimatedSprite2D.play("attack") # Assumes you have an "attack" animation
+	if player and player.has_method("take_damage"):
+		player.take_damage(damage)
 
 
 # This function is called automatically when a body enters the DetectionArea
@@ -63,4 +74,16 @@ func _on_detection_area_body_exited(body):
 func take_damage(amount):
 	health -= amount
 	if health <= 0:
-		queue_free()
+		die()
+
+func die():
+	# Stop the bat from moving and being interacted with
+	set_physics_process(false)
+	collision_shape.set_deferred("disabled", true)
+
+	# Play the death animation
+	$AnimatedSprite2D.play("death")
+	
+	# Wait for the animation to finish, then remove the bat
+	await $AnimatedSprite2D.animation_finished
+	queue_free()
