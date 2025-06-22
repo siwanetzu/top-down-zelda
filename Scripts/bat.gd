@@ -7,18 +7,15 @@ class_name Bat extends CharacterBody2D
 @export var damage = 1
 @export var attack_cooldown = 1.0
 
-var time_since_last_attack = 0.0
-# This will act as the switch to turn chasing on and off
-var is_chasing = false
 # This will hold a reference to the player node
 var player = null
 
 @onready var _animated_sprite = $AnimatedSprite2D
 @onready var collision_shape = $CollisionShape2D
+@onready var state_machine = $StateMachine
 
 func _ready():
 	var mob_types = Array($AnimatedSprite2D.sprite_frames.get_animation_names())
-	$AnimatedSprite2D.animation = mob_types.pick_random()
 	add_to_group("enemies")
 	# Let's make it start with an idle animation
 	$AnimatedSprite2D.play("idle") # Assumes you have an "idle" animation
@@ -26,50 +23,35 @@ func _ready():
 	var player_nodes = get_tree().get_nodes_in_group("player")
 	if player_nodes.size() > 0:
 		player = player_nodes[0]
-
-
-# _physics_process is called every physics frame. Ideal for movement.
-func _physics_process(delta):
-	time_since_last_attack += delta
-	# We only run our chase/attack logic if is_chasing is true.
-	if is_chasing and player:
-		var distance_to_player = global_position.distance_to(player.global_position)
 		
-		if distance_to_player <= attack_range:
-			# Player is in attack range, stop and attack
-			velocity = Vector2.ZERO
-			if time_since_last_attack >= attack_cooldown:
-				attack()
-		else:
-			# Player is in chase range, but not attack range. Move towards them.
-			var direction = global_position.direction_to(player.global_position)
-			velocity = direction * speed
-			$AnimatedSprite2D.play("walk") # Assumes you have a "walk" animation
-	else:
-		# Player is outside the detection area. Stop moving.
-		velocity = Vector2.ZERO
-		$AnimatedSprite2D.play("idle")
-		
-	move_and_slide()
+	
+	var detection_area = get_node("DetectionArea")
+	if detection_area:
+		# DetectionArea should not be on any layer
+		detection_area.collision_layer = 0
+		# DetectionArea should ONLY look for the player on layer 2 (value 2)
+	detection_area.collision_mask = 2
+	detection_area.body_entered.connect(_on_detection_area_body_entered)
+	detection_area.body_exited.connect(_on_detection_area_body_exited)
 
-func attack():
-	time_since_last_attack = 0.0
-	$AnimatedSprite2D.play("attack") # Assumes you have an "attack" animation
-	if player and player.has_method("take_damage"):
-		player.take_damage(damage)
-
-
-# This function is called automatically when a body enters the DetectionArea
 func _on_detection_area_body_entered(body):
-	# Check if the body that entered is the player (by checking its group)
+	print("Detection Body Entered signal working")
 	if body.is_in_group("player"):
-		is_chasing = true
+		print("body is in the group player")
+		state_machine.transition_to("ChaseState")
+		print ("Transitioning to Chase State")
 
-
-# This function is called automatically when a body exits the DetectionArea
 func _on_detection_area_body_exited(body):
 	if body.is_in_group("player"):
-		is_chasing = false
+		state_machine.transition_to("IdleState")
+func _process(delta):
+	if state_machine.current_state:
+		state_machine.current_state.update(delta)
+# _physics_process now gets the state's logic first, then moves.
+func _physics_process(delta):
+	if state_machine.current_state:
+		state_machine.current_state.physics_update(delta)
+	move_and_slide()
 
 func take_damage(amount):
 	health -= amount

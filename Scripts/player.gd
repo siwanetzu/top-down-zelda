@@ -81,6 +81,8 @@ func _attack():
 	_animated_sprite.play(animation_to_play)
 
 	var hitbox_instance = Hitbox.instantiate()
+	# Force the hitbox to look for enemies on layer 3 (which is value 4)
+	hitbox_instance.collision_mask = 4
 	var hitbox_position = Vector2.ZERO
 
 	# Direction of my attacks for hitbox2d area

@@ -13,7 +13,7 @@ This phase is about creating a playable, repeatable slice of the game. The goal 
     * [x] ✅ Enemy Health & Taking Damage (The take_damage function exists)
     * [x] ✅ Enemy Attack Logic (The enemy stops in range but doesn't have an attack yet)
     * [x] ✅ Death Sequence (What happens when enemy health reaches zero)
-    * [ ] Advanced AI for enemy (idle, movement, attack states)
+    * [x] ✅ Advanced AI for enemy (idle, movement, attack states)
 * Core Interaction & UI
     * [x] ✅ Player-to-Enemy Damage System (The hitbox successfully calls the enemy's take_damage function)
     * [x] ✅ Enemy-to-Player Damage System (The enemy's attack needs to call a take_damage function on the player)
